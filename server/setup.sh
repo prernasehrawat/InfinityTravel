@@ -26,6 +26,11 @@ npm install express sqlite3
 # Install nodemon for development (optional)
 npm install --save-dev nodemon
 
+# Install packages
+npm install cors
+
+npm install jsonwebtoken
+
 echo "Setup complete. You can start the server by running:"
 echo "node server.js"
 

@@ -9,17 +9,42 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [results, setResults] = useState<string[]>([]);
 
-  const validUsername = 'user@example.com';
-  const validPassword = 'password123';
+  // const validUsername = 'user@example.com';
+  // const validPassword = 'password123';
 
-  const handleLogin = (email: string, password: string) => {
-    if (email === validUsername && password === validPassword) {
-      setIsLoggedIn(true);
-      console.log('Login successful');
-    } else {
-      alert('Invalid credentials');
+  // const handleLogin = (email: string, password: string) => {
+  //   if (email === validUsername && password === validPassword) {
+  //     setIsLoggedIn(true);
+  //     console.log('Login successful');
+  //   } else {
+  //     alert('Invalid credentials');
+  //   }
+  // };
+
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const response = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsLoggedIn(true);
+        console.log('Login successful');
+      } else {
+        alert(data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      alert('An error occurred during login');
     }
   };
+
 
   const handleLogout = () => {
     setIsLoggedIn(false);
