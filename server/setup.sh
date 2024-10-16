@@ -16,9 +16,6 @@ sudo apt-get install -y build-essential
 # Install SQLite
 sudo apt-get install -y sqlite3
 
-# Create a directory for the project
-mkdir -p ~/my-express-app
-cd ~/my-express-app
 
 # Initialize npm project
 npm init -y
