@@ -7,6 +7,8 @@ import SearchResults from "./components/SearchResults";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [results, setResults] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const staticCouponCode = "TRAVEL10";
 
   // const validUsername = 'user@example.com';
   // const validPassword = 'password123';
@@ -46,6 +48,11 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setShowDropdown(false);
+  };
+
+  const handleProfileClick = () => {
+    setShowDropdown(!showDropdown);
   };
 
   const handleSearch = (query: string) => {
@@ -60,10 +67,29 @@ function App() {
         <LoginForm onLogin={handleLogin} />
       ) : (
         <div>
+          {/*updated nav- creating a Travel Credits button, Coupon dropdown*/}
           <nav className="bg-blue-500 text-white px-4 py-2 flex justify-between items-center">
             <h1 className="text-xl font-semibold">Infinity Travel</h1>
             <div className="flex items-center">
-              <span className="mr-4">Welcome, [User's Name]</span>{" "}
+              <span className="mr-4">Welcome, [User's Name]</span>
+
+              {/* Travel credits button */}
+              <div className="relative">
+                <button
+                  onClick={handleProfileClick}
+                  className="bg-white text-blue-500 px-4 py-1 rounded hover:bg-gray-200 mr-4"
+                >
+                  Travel Credits
+                </button>
+                {/* Dropdown for coupon code */}
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
+                    <div className="py-2 px-4 text-gray-700">
+                      <strong>Coupon Code:</strong> {staticCouponCode}
+                    </div>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={handleLogout}
                 className="bg-white text-blue-500 px-4 py-1 rounded hover:bg-gray-200"
