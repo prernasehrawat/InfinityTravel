@@ -1,73 +1,73 @@
-import React, { useState } from "react";
-import "./App.css";
-import LoginForm from "./components/LoginForm";
-import SearchForm from "./components/SearchForm";
-import SearchResults from "./components/SearchResults";
+import React, { useState } from 'react';
+import LoginForm from './components/LoginForm';
+import SearchForm from './components/SearchForm';
+import SearchResults from './components/SearchResults';
+
+interface Flight {
+  reservation_id: string;
+  flight_number: string;
+  departure_airport: string;
+  arrival_airport: string;
+  departure_time: string;
+  arrival_time: string;
+  total_cost: number;
+}
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [results, setResults] = useState<string[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const staticCouponCode = "TRAVEL10";
+  const [isLoggedIn, setIsLoggedIn] = useState(false);  // Track login status
+  const [results, setResults] = useState<Flight[]>([]);  // Store flight search results
 
-  // const validUsername = 'user@example.com';
-  // const validPassword = 'password123';
+  const [showDropdown, setShowDropdown] = useState(false);  // Control dropdown visibility
+  const staticCouponCode = 'FLY2024';  // Example coupon code
 
-  // const handleLogin = (email: string, password: string) => {
-  //   if (email === validUsername && password === validPassword) {
-  //     setIsLoggedIn(true);
-  //     console.log('Login successful');
-  //   } else {
-  //     alert('Invalid credentials');
-  //   }
-  // };
+  // Handle login state change
+  const handleLogin = (email: string, password: string) => {
+    setIsLoggedIn(true);
+    console.log('Login successful');
+  };
 
-  const handleLogin = async (email: string, password: string) => {
+  // Handle logout by resetting login state
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  // Handle search for flights
+  const handleSearch = async (arrival_airport: string, arrival_date: string) => {
     try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        `http://localhost:8000/flights/destination/${arrival_airport}/date/${arrival_date}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        setIsLoggedIn(true);
-        console.log("Login successful");
+        setResults(data);  // Store flight data
       } else {
-        alert(data.message || "Invalid credentials");
+        alert('No flights found or invalid input');
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      alert("An error occurred during login");
+      console.error('Error fetching flights:', error);
+      alert('An error occurred while fetching flight data');
     }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setShowDropdown(false);
-  };
-
+  // Handle dropdown toggle
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
-  };
-
-  const handleSearch = (query: string) => {
-    console.log("Searching for:", query);
-    const fakeResults = ["Result 1", "Result 2", "Result 3"];
-    setResults(fakeResults);
   };
 
   return (
     <div className="App">
       {!isLoggedIn ? (
-        <LoginForm onLogin={handleLogin} />
+        <LoginForm onLogin={handleLogin} />  
       ) : (
         <div>
-          {/*updated nav- creating a Travel Credits button, Coupon dropdown*/}
           <nav className="bg-blue-500 text-white px-4 py-2 flex justify-between items-center">
             <h1 className="text-xl font-semibold">Infinity Travel</h1>
             <div className="flex items-center">
@@ -96,11 +96,11 @@ function App() {
               >
                 Logout
               </button>
-            </div>
+            </div> {/* Ensure closing tag here */}
           </nav>
           <div className="p-4">
-            <SearchForm onSearch={handleSearch} />
-            <SearchResults results={results} />
+            <SearchForm onSearch={handleSearch} /> 
+            <SearchResults results={results} />  
           </div>
         </div>
       )}
