@@ -6,6 +6,7 @@
 # Db setup instructions
 
 - navigate to the server folder
+- delete infinity-travel.db if it exists.
 - run `npm i`.
 - run `sqlite3 infinity-travel.db` in the console. Leave the cli running.
 - Uncomment seedData() from the server.js file. This will create the tables and add initial data to it.
