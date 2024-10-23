@@ -25,4 +25,4 @@
 3) INSERT INTO flight_reservations (user_id, flight_number, departure_airport, arrival_airport, departure_time, arrival_time, passenger_name, seat_class, total_cost) VALUES (1, 'DL789', 'ATL', 'LAX', '2024-12-15 07:00:00', '2024-12-15 10:00:00', 'John Doe', 'Economy', 900.00);
 
 
-2) Now start the server with npm start and then run curl http://localhost:8000/destination/destination/LAX/date/2024-12-15
+2) Now start the server with npm start and then run "curl http://localhost:8000/destination/LAX/date/2024-12-15"

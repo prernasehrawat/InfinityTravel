@@ -25,5 +25,5 @@ app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 
   // Uncomment this to seed data on the first run
-   seedData();
+//   seedData();
 });
