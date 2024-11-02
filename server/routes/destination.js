@@ -1,13 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { db } = require('../models/db');
+const { db } = require("../models/db");
 
 // GET /destination/:arrival_airport/date/:arrival_date
-router.get('/:arrival_airport/date/:arrival_date', (req, res) => {
+router.get("/:arrival_airport/date/:arrival_date", (req, res) => {
   const { arrival_airport, arrival_date } = req.params;
-
-  console.log("ENTERED");
-
 
   const query = `
     SELECT 
@@ -28,16 +25,16 @@ router.get('/:arrival_airport/date/:arrival_date', (req, res) => {
       ORDER BY total_cost ASC
   `;
 
-  console.log("abccc");
-
   db.all(query, [arrival_airport, arrival_date], (err, rows) => {
     if (err) {
-      console.error('Error retrieving flights:', err.message);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error retrieving flights:", err.message);
+      return res.status(500).json({ error: "Internal server error" });
     }
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: 'No flights found to this destination on the specified date.' });
+      return res.status(404).json({
+        message: "No flights found to this destination on the specified date.",
+      });
     }
 
     res.json(rows);
