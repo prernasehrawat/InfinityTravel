@@ -79,4 +79,48 @@
 .strong {
   font-weight: bold;
 }
+/* Additions for Contact Us button, footer */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+
+.main-content {
+  flex-grow: 1; 
+  padding: 2rem; 
+}
+
+
+.footer {
+  background-color: #f1f1f1;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+}
+
+.contact-button {
+  background-color: #1d4ed8;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.contact-button:hover {
+  background-color: #2563eb;
+}
+
+.contact-link {
+  color: white;
+  text-decoration: underline;
+}
+
+.contact-link:hover {
+  text-decoration: none;
+}
 
