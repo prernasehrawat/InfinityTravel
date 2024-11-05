@@ -23,3 +23,22 @@
 3. INSERT INTO flight_reservations (user_id, flight_number, departure_airport, arrival_airport, departure_time, arrival_time, passenger_name, seat_class, total_cost) VALUES (1, 'DL789', 'ATL', 'LAX', '2024-12-15 07:00:00', '2024-12-15 10:00:00', 'John Doe', 'Economy', 900.00);
 
 4. Now start the server with npm start and then run "curl http://localhost:8000/destination/LAX/date/2024-12-15"
+
+#Testing for search logic
+
+1) Temprory workaround: Update the flights table through sql command line to add column of stops and airline with following commands
+
+i) ALTER TABLE flights ADD COLUMN stops INTEGER;
+ii) UPDATE flights SET stops = 0;
+
+iii) ALTER TABLE flights ADD COLUMN airline TEXT;
+iv) UPDATE flights SET airline = 'Unknown';
+
+
+2) Now run following commands to search flights using three different parameters
+
+curl "http://localhost:8000/search?maxPrice=280"
+
+curl "http://localhost:8000/search?stops=0"
+
+curl "http://localhost:8000/search?airline=DL"
