@@ -82,7 +82,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
         </form>
 
         <p className="text-gray-500 text-center text-base mt-8">
-          Try searching for: <span className="font-semibold">LAX on 2024-12-15</span>
+          Try searching for: <span className="font-semibold">LAX on 11/10/2024</span>
         </p>
       </div>
     </div>

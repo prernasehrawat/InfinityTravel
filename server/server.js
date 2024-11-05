@@ -24,7 +24,11 @@ app.use("/destination", destination); // Use the Destination route
 app.use("/search", search); // Use the search route
 app.use("/favourites", favourites); // Use the search route
 
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
+
+
 });

@@ -270,13 +270,15 @@ import { useUser } from "./components/UserContext";
 import Favourites from "./components/Favourites";
 
 interface Flight {
-  reservation_id: string;
+  flight_id: number;
   flight_number: string;
+  airline: string;
   departure_airport: string;
   arrival_airport: string;
   departure_time: string;
   arrival_time: string;
-  total_cost: number;
+  base_cost: number;
+  stops: number;
 }
 
 interface MainContentProps {
@@ -293,14 +295,23 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
     arrival_date: string
   ) => {
     try {
+      // const response = await fetch(
+      //   `http://localhost:8000/destination/${arrival_airport}/date/${arrival_date}`,
+      //   {
+      //     method: "GET",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
       const response = await fetch(
-        `http://localhost:8000/destination/${arrival_airport}/date/${arrival_date}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+          `http://localhost:8000/search?arrival_airport=${arrival_airport}&arrival_date=${arrival_date}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
       );
 
       const data = await response.json();

@@ -43,13 +43,15 @@ import React from 'react';
 import { useUser } from './UserContext';  // Import useUser to access the session
 
 interface Flight {
-  reservation_id: string;
+  flight_id: number;
   flight_number: string;
+  airline: string;
   departure_airport: string;
   arrival_airport: string;
   departure_time: string;
   arrival_time: string;
-  total_cost: number;
+  base_cost: number;
+  stops: number;
 }
 
 interface SearchResultsProps {
@@ -74,12 +76,12 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
         <h3 className="text-xl font-semibold mb-4">Search Results:</h3>
         <div className="space-y-4">
           {results.map((flight) => (
-              <div key={flight.reservation_id} className="p-4 border rounded-lg shadow-sm bg-white">
+              <div key={flight.flight_id} className="p-4 border rounded-lg shadow-sm bg-white">
                 <p><strong>Flight Number:</strong> {flight.flight_number}</p>
                 <p><strong>From:</strong> {flight.departure_airport} <strong>To:</strong> {flight.arrival_airport}</p>
                 <p><strong>Departure:</strong> {new Date(flight.departure_time).toLocaleString()}</p>
                 <p><strong>Arrival:</strong> {new Date(flight.arrival_time).toLocaleString()}</p>
-                <p><strong>Cost:</strong> ${flight.total_cost}</p>
+                <p><strong>Cost:</strong> ${flight.base_cost}</p>
               </div>
           ))}
         </div>
