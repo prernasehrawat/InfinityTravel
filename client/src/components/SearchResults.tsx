@@ -61,6 +61,30 @@ interface SearchResultsProps {
 const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   const { user } = useUser();  // Access the session data (like isLoggedIn)
 
+  // Function to copy shareable content to clipboard
+  const handleCopyShareContent = (flight: Flight) => {
+    const shareContent = `Flight Number: ${flight.flight_number}\nFrom: ${flight.departure_airport} To: ${flight.arrival_airport}\nDeparture: ${new Date(flight.departure_time).toLocaleString()}\nArrival: ${new Date(flight.arrival_time).toLocaleString()}\nCost: $${flight.base_cost}`;
+
+    navigator.clipboard.writeText(shareContent)
+      .then(() => {
+        alert("Flight details copied to clipboard!");
+      })
+      .catch((error) => {
+        console.error("Failed to copy text:", error);
+        alert("Failed to copy flight details.");
+      });
+  };
+
+  // Function to share via email
+  const handleEmailShare = (flight: Flight) => {
+    const subject = `Flight Details: ${flight.flight_number}`;
+    const body = `Flight Number: ${flight.flight_number}\nFrom: ${flight.departure_airport} To: ${flight.arrival_airport}\nDeparture: ${new Date(flight.departure_time).toLocaleString()}\nArrival: ${new Date(flight.arrival_time).toLocaleString()}\nCost: $${flight.base_cost}`;
+
+    // Create a mailto link with subject and body
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
+  };
+
   // Check if the user is logged in
   if (!user.isLoggedIn) {
     return <div className="text-center text-red-500">Please log in to see search results.</div>;
@@ -82,10 +106,30 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
                 <p><strong>Departure:</strong> {new Date(flight.departure_time).toLocaleString()}</p>
                 <p><strong>Arrival:</strong> {new Date(flight.arrival_time).toLocaleString()}</p>
                 <p><strong>Cost:</strong> ${flight.base_cost}</p>
+                {/* Copy to Clipboard Button */}
+                <button
+                    onClick={() => handleCopyShareContent(flight)}
+                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
+                >
+                  Copy Details
+                </button>
+
+                {/* Share via Email Button */}
+                <button
+                    onClick={() => handleEmailShare(flight)}
+                    className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                >
+                  Share via Email
+                </button>
               </div>
+
           ))}
+
         </div>
+
       </div>
+
+
   );
 };
 
