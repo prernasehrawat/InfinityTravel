@@ -4,50 +4,71 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface User {
     isLoggedIn: boolean;
     email: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
     couponCode: string;
+    profileImage?: string;
 }
 
 interface UserContextType {
     user: User;
-    login: (userData: { email: string; coupon_code: string }) => void;
+    login: (userData: Omit<User, 'isLoggedIn'>) => void;
     logout: () => void;
+    updateUser: (updatedData: Partial<User>) => void;
 }
 
 // Create the context with the correct type, and give it a default value
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Create a type for the props of UserProvider
 interface UserProviderProps {
     children: ReactNode;
 }
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-    const [user, setUser] = useState<User>({
-        isLoggedIn: false,
-        email: '',
-        couponCode: '',
+    const [user, setUser] = useState<User>(() => {
+        const storedUser = localStorage.getItem('user');
+        return storedUser
+            ? JSON.parse(storedUser)
+            : {
+                  isLoggedIn: false,
+                  email: '',
+                  first_name: '',
+                  last_name: '',
+                  phone_number: '',
+                  couponCode: '',
+                  profileImage: '', // Set default empty profile image
+              };
     });
 
-    const login = (userData: { email: string; coupon_code: string }) => {
-        setUser({
-            isLoggedIn: true,
-            email: userData.email,
-            couponCode: userData.coupon_code,
-        });
-        localStorage.setItem('user', JSON.stringify(userData));
+    const login = (userData: Omit<User, 'isLoggedIn'>) => {
+        const updatedUser = { ...userData, isLoggedIn: true };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
     };
 
     const logout = () => {
         setUser({
             isLoggedIn: false,
             email: '',
+            first_name: '',
+            last_name: '',
+            phone_number: '',
             couponCode: '',
+            profileImage: '', // Reset profile image on logout
         });
         localStorage.removeItem('user');
     };
 
+    const updateUser = (updatedData: Partial<User>) => {
+        const updatedUser = { ...user, ...updatedData };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser)); // Save to localStorage
+    };
+    
+
     return (
-        <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, login, logout, updateUser }}>
             {children}
         </UserContext.Provider>
     );

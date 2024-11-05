@@ -265,6 +265,7 @@ import LoginForm from "./components/LoginForm";
 import SearchForm from "./components/SearchForm";
 import SearchResults from "./components/SearchResults";
 import SupportPage from "./components/SupportPage";
+import ProfilePage from "./components/ProfilePage"; 
 import { useUser } from "./components/UserContext";
 
 interface Flight {
@@ -318,12 +319,18 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
     setShowDropdown(!showDropdown);
   };
 
+  const handleHelloWorldClick = () => {
+    console.log("hello world");
+  };
+
+
+
   return (
     <div>
       <nav className="bg-blue-500 text-white px-4 py-2 flex justify-between items-center">
         <h1 className="text-xl font-semibold">Infinity Travel</h1>
         <div className="flex items-center">
-          <span className="mr-4">Welcome, {user.email}</span>
+          <span className="mr-4">Welcome, {user.first_name} {user.last_name} </span>
           <div className="relative">
             <button
               onClick={handleProfileClick}
@@ -340,6 +347,12 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
               </div>
             )}
           </div>
+
+            {/* Profile Button linking to Support Page */}
+            <a href="/profile"   target="_blank"
+          rel="noopener noreferrer" className="bg-white text-blue-500 px-4 py-1 rounded hover:bg-gray-200 mr-4">
+            Profile
+          </a>
           <button
             onClick={() => {
               logout();
@@ -369,33 +382,36 @@ function App() {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        login({
-          email: data.email,
-          coupon_code: data.coupon_code,
+        const response = await fetch("http://localhost:8000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
         });
-        console.log("Login successful");
 
-        // Setting logged-in state to true
-        setIsLoggedIn(true);
-      } else {
-        alert(data.message || "Invalid credentials");
-      }
+        const data = await response.json();
+
+        if (response.ok) {
+            login({
+                email: data.email,
+                phone_number: data.phone_number,
+                first_name: data.first_name,
+                last_name: data.last_name,
+                couponCode: data.coupon_code,
+            });
+            console.log("Login successful");
+
+            // Setting logged-in state to true
+            setIsLoggedIn(true);
+        } else {
+            alert(data.message || "Invalid credentials");
+        }
     } catch (error) {
-      console.error("Error logging in:", error);
-      alert("An error occurred during login");
+        console.error("Error logging in:", error);
+        alert("An error occurred during login");
     }
-  };
+};
 
   return (
     <Router>
@@ -412,6 +428,7 @@ function App() {
             }
           />
           <Route path="/support" element={<SupportPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
 
         {/* Global Footer - Hidden on the support page*/}
@@ -425,7 +442,7 @@ function App() {
 function ConditionalFooter() {
   const location = useLocation();
 
-  if (location.pathname === "/support") {
+  if (location.pathname === "/support" || location.pathname === "/profile") {
     return null;
   }
 
