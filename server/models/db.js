@@ -48,11 +48,13 @@ const createTables = () => {
       CREATE TABLE IF NOT EXISTS flights (
         flight_id INTEGER PRIMARY KEY AUTOINCREMENT,
         flight_number TEXT NOT NULL UNIQUE,
+        airline TEXT NOT NULL,
         departure_airport TEXT NOT NULL,
         arrival_airport TEXT NOT NULL,
         departure_time DATETIME NOT NULL,
         arrival_time DATETIME NOT NULL,
-        base_cost DECIMAL(10, 2) NOT NULL
+        base_cost DECIMAL(10, 2) NOT NULL,
+        stops INTEGER NOT NULL DEFAULT 0
       );
     `);
     db.run(`
@@ -117,6 +119,15 @@ const createTables = () => {
         FOREIGN KEY (car_service_id) REFERENCES car_services(service_id)
       );
     `);
+    db.run(`
+      CREATE TABLE IF NOT EXISTS favourites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        search_params TEXT DEFAULT '{}',
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+      );
+    `);
     console.log("Tables created successfully.");
     seedUsers();
   });
@@ -170,11 +181,11 @@ const seedHotelBookings = () => {
 const seedFlights = () => {
   db.run(
     `
-    INSERT INTO flights (flight_number, departure_airport, arrival_airport, departure_time, arrival_time, base_cost)
+    INSERT INTO flights (flight_number, airline, departure_airport, arrival_airport, departure_time, arrival_time, base_cost, stops)
     VALUES 
-      ('AA123', 'JFK', 'LAX', '2024-11-10 08:00:00', '2024-11-10 11:30:00', 300.00),
-      ('BA456', 'LAX', 'ORD', '2024-11-11 15:00:00', '2024-11-11 21:00:00', 250.00),
-      ('DL789', 'ORD', 'ATL', '2024-11-12 06:00:00', '2024-11-12 09:00:00', 150.00);
+      ('AA123', 'DL', 'JFK', 'LAX', '2024-11-10 08:00:00', '2024-11-10 11:30:00', 300.00, 0),
+      ('BA456', 'DL', 'LAX', 'ORD', '2024-11-11 15:00:00', '2024-11-11 21:00:00', 250.00, 0),
+      ('DL789', 'DL', 'ORD', 'ATL', '2024-11-12 06:00:00', '2024-11-12 09:00:00', 150.00, 1);
   `,
     (err) => {
       if (!err) {

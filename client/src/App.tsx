@@ -265,8 +265,9 @@ import LoginForm from "./components/LoginForm";
 import SearchForm from "./components/SearchForm";
 import SearchResults from "./components/SearchResults";
 import SupportPage from "./components/SupportPage";
-import ProfilePage from "./components/ProfilePage"; 
+import ProfilePage from "./components/ProfilePage";
 import { useUser } from "./components/UserContext";
+import Favourites from "./components/Favourites";
 
 interface Flight {
   reservation_id: string;
@@ -319,18 +320,21 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
     setShowDropdown(!showDropdown);
   };
 
-  const handleHelloWorldClick = () => {
-    console.log("hello world");
-  };
-
-
-
   return (
     <div>
       <nav className="bg-blue-500 text-white px-4 py-2 flex justify-between items-center">
         <h1 className="text-xl font-semibold">Infinity Travel</h1>
         <div className="flex items-center">
-          <span className="mr-4">Welcome, {user.first_name} {user.last_name} </span>
+          <span className="mr-4">
+            Welcome, {user.first_name} {user.last_name}{" "}
+          </span>
+          <a
+            href="/favourite-searches"
+            className="bg-white text-blue-500 px-4 py-1 rounded hover:bg-gray-200 mr-4"
+          >
+            Favourite Searches
+          </a>
+
           <div className="relative">
             <button
               onClick={handleProfileClick}
@@ -348,9 +352,13 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
             )}
           </div>
 
-            {/* Profile Button linking to Support Page */}
-            <a href="/profile"   target="_blank"
-          rel="noopener noreferrer" className="bg-white text-blue-500 px-4 py-1 rounded hover:bg-gray-200 mr-4">
+          {/* Profile Button linking to Support Page */}
+          <a
+            href="/profile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-blue-500 px-4 py-1 rounded hover:bg-gray-200 mr-4"
+          >
             Profile
           </a>
           <button
@@ -382,36 +390,37 @@ function App() {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-        const response = await fetch("http://localhost:8000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        login({
+          user_id: data.user_id,
+          email: data.email,
+          phone_number: data.phone_number,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          couponCode: data.coupon_code,
         });
+        console.log("Login successful");
 
-        const data = await response.json();
-
-        if (response.ok) {
-            login({
-                email: data.email,
-                phone_number: data.phone_number,
-                first_name: data.first_name,
-                last_name: data.last_name,
-                couponCode: data.coupon_code,
-            });
-            console.log("Login successful");
-
-            // Setting logged-in state to true
-            setIsLoggedIn(true);
-        } else {
-            alert(data.message || "Invalid credentials");
-        }
+        // Setting logged-in state to true
+        setIsLoggedIn(true);
+      } else {
+        alert(data.message || "Invalid credentials");
+      }
     } catch (error) {
-        console.error("Error logging in:", error);
-        alert("An error occurred during login");
+      console.error("Error logging in:", error);
+      alert("An error occurred during login");
     }
-};
+  };
 
   return (
     <Router>
@@ -429,6 +438,7 @@ function App() {
           />
           <Route path="/support" element={<SupportPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/favourite-searches" element={<Favourites />} />
         </Routes>
 
         {/* Global Footer - Hidden on the support page*/}
