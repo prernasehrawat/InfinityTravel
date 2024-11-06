@@ -51,19 +51,42 @@ const { db } = require("../models/db");
 
 // GET /search route
 router.get("/", (req, res) => {
-  const { stops, airline, maxPrice, arrival_airport, arrival_date } = req.query;
+  const {
+    stops,
+    airlines,
+    priceRange,
+    origin_airport,
+    arrival_airport,
+    arrival_date,
+  } = req.query;
+
+  // Extract price range
+  const [minPrice, maxPrice] = priceRange
+    ? priceRange.split(",").map(Number)
+    : [null, null];
+
+  // Extract airlines
+  const airlineList = airlines ? airlines.split(",") : [];
+
+  // Extract stops
+  const stopsCount = stops ? parseInt(stops, 10) : null;
 
   let query = "SELECT * FROM flights WHERE 1=1";
   const params = [];
 
   // Add filters based on query parameters
-  if (stops) {
+  if (stopsCount) {
     query += " AND stops = ?";
-    params.push(stops);
+    params.push(stopsCount);
   }
-  if (airline) {
-    query += " AND airline = ?";
-    params.push(airline);
+  if (airlineList.length > 0) {
+    query += ` AND airline IN (${airlineList
+      .map((airline) => `'${airline}'`)
+      .join(", ")})`;
+  }
+  if (minPrice) {
+    query += " AND base_cost >= ?";
+    params.push(minPrice);
   }
   if (maxPrice) {
     query += " AND base_cost <= ?";
@@ -72,6 +95,10 @@ router.get("/", (req, res) => {
   if (arrival_airport) {
     query += " AND arrival_airport = ?";
     params.push(arrival_airport);
+  }
+  if (origin_airport) {
+    query += " AND departure_airport = ?";
+    params.push(origin_airport);
   }
   if (arrival_date) {
     query += " AND DATE(arrival_time) = DATE(?)";

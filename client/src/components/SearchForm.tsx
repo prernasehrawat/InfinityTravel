@@ -1,90 +1,331 @@
-import React, { useState } from 'react';
-import { useUser } from './UserContext';  // Import useUser to access the session
+import React, { useState } from "react";
+import { useUser } from "./UserContext";
+import { Transition } from "@headlessui/react";
 
 interface SearchFormProps {
+  onSearch: (
+    origin_airport: string,
+    arrival_airport: string,
+    arrival_date: string,
+    filters: Filters
+  ) => void;
+}
 
-      onSearch: (arrival_airport: string, arrival_date: string) => void;
+export interface Filters {
+  priceRange: [number, number];
+  airlines: string[];
+  stops: number;
 }
 
 const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
-    const { user } = useUser();  // Access the session data (like isLoggedIn)
-    const [query, setQuery] = useState('');
-    const [selectedAirport, setSelectedAirport] = useState('');
-    const [arrivalDate, setArrivalDate] = useState('');
-    const [error, setError] = useState('');
+  const { user } = useUser();
+  const [query, setQuery] = useState("");
+  const [selectedOriginAirport, setSelectedOriginAirport] = useState("");
+  const [selectedDestAirport, setSelectedDestAirport] = useState("");
+  const [arrivalDate, setArrivalDate] = useState("");
+  const [error, setError] = useState("");
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    priceRange: [100, 1000],
+    airlines: [],
+    stops: 0,
+  });
 
-  const commonAirports = ['JFK', 'LAX', 'CDG', 'LHR', 'HND', 'SFO', 'ORD', 'ATL', 'DXB', 'SIN'];
+  const commonAirports = [
+    "JFK",
+    "LAX",
+    "CDG",
+    "LHR",
+    "HND",
+    "SFO",
+    "ORD",
+    "ATL",
+    "DXB",
+    "SIN",
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-      if (!user.isLoggedIn) {
-          alert('You need to be logged in to search.');
-          return;
-      }
-
-      if (!selectedAirport || !arrivalDate) {
-      setError('Please select an airport and date');
+    if (!user.isLoggedIn) {
+      alert("You need to be logged in to search.");
       return;
     }
-    setError('');
-    onSearch(selectedAirport, arrivalDate);
+
+    if (!selectedOriginAirport || !selectedDestAirport) {
+      setError("Please select both airports.");
+      return;
+    }
+    setError("");
+    onSearch(selectedOriginAirport, selectedDestAirport, arrivalDate, filters);
   };
 
+  const openFilterModal = () => {
+    setFilterModalOpen(true);
+  };
+
+  const closeFilterModal = () => {
+    setFilterModalOpen(false);
+  };
+
+  const updateFilters = (newFilters: Partial<Filters>) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ...newFilters,
+    }));
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-12 rounded-lg shadow-lg w-full max-w-4xl">
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">Infinity Travel</h1>
-        <h2 className="text-2xl font-semibold text-center mb-6">Search Flights</h2>
+    <div className="bg-gray-100 py-6 px-6 rounded-xl">
+      <div className="flex items-center space-x-4 w-full py-6">
+        <div className="w-full text-left">
+          <label
+            htmlFor="origin_airport"
+            className="text-sm text-gray-600 font-medium"
+          >
+            Origin Airport
+          </label>
+          <input
+            id="origin_airport"
+            type="text"
+            list="airports"
+            placeholder="Enter Origin Airport Code"
+            value={selectedOriginAirport}
+            onChange={(e) => setSelectedOriginAirport(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={!user.isLoggedIn}
+          />
+          <datalist id="airports">
+            {commonAirports.map((airport) => (
+              <option key={airport} value={airport} />
+            ))}
+          </datalist>
+        </div>
 
-        <form onSubmit={handleSearch} className="space-y-6">
-          <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6">
-            <div className="w-full">
-              <label htmlFor="airport" className="block text-lg mb-2 text-gray-700">Destination Airport</label>
-              <input
-                type="text"
-                list="airports"
-                id="airport"
-                placeholder="Enter Destination Airport Code"
-                value={selectedAirport}
-                onChange={(e) => setSelectedAirport(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={!user.isLoggedIn}  // Disable input if not logged in
-              />
-              <datalist id="airports">
-                {commonAirports.map((airport) => (
-                  <option key={airport} value={airport} />
-                ))}
-              </datalist>
+        <div className="w-full text-left">
+          <label
+            htmlFor="destination_airport"
+            className="text-sm text-gray-600 font-medium"
+          >
+            Destination Airport
+          </label>
+          <input
+            id="destination_airport"
+            type="text"
+            list="airports"
+            placeholder="Enter Destination Airport Code"
+            value={selectedDestAirport}
+            onChange={(e) => setSelectedDestAirport(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={!user.isLoggedIn}
+          />
+          <datalist id="airports">
+            {commonAirports.map((airport) => (
+              <option key={airport} value={airport} />
+            ))}
+          </datalist>
+        </div>
+
+        <div className="w-full text-left">
+          <label
+            htmlFor="arrival_date"
+            className="text-sm text-gray-600 font-medium"
+          >
+            Arrival Date
+          </label>
+          <input
+            id="arrival_date"
+            type="date"
+            value={arrivalDate}
+            onChange={(e) => setArrivalDate(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={openFilterModal}
+          className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-200 mt-5"
+          disabled={!user.isLoggedIn}
+        >
+          Filter
+        </button>
+        <button
+          type="submit"
+          onClick={handleSearch}
+          className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mt-5"
+          disabled={!user.isLoggedIn}
+        >
+          Search
+        </button>
+      </div>
+
+      {error && (
+        <p className="text-red-500 text-lg ml-4 mt-8 w-full">{error}</p>
+      )}
+
+      <Transition
+        show={filterModalOpen}
+        enter="transition-opacity duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="fixed inset-0 bg-black bg-opacity-75 cursor-pointer"
+            onClick={closeFilterModal}
+          ></div>
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl z-50">
+            <h2 className="text-2xl font-bold mb-6">Filter Options</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium">Price Range</h3>
+                <div className="mt-2 flex items-center">
+                  <span className="mr-4">${filters.priceRange[0]}</span>
+                  <input
+                    type="range"
+                    min={100}
+                    max={1000}
+                    value={filters.priceRange[0]}
+                    onChange={(e) =>
+                      updateFilters({
+                        priceRange: [
+                          parseInt(e.target.value),
+                          filters.priceRange[1],
+                        ],
+                      })
+                    }
+                    className="w-full"
+                  />
+                  <input
+                    type="range"
+                    min={100}
+                    max={1000}
+                    value={filters.priceRange[1]}
+                    onChange={(e) =>
+                      updateFilters({
+                        priceRange: [
+                          filters.priceRange[0],
+                          parseInt(e.target.value),
+                        ],
+                      })
+                    }
+                    className="w-full"
+                  />
+                  <span className="ml-4">${filters.priceRange[1]}</span>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium">Airlines</h3>
+                <div className="flex space-x-4 mt-2">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={filters.airlines.includes("UNITED")}
+                      onChange={() =>
+                        updateFilters({
+                          airlines: filters.airlines.includes("UNITED")
+                            ? filters.airlines.filter((a) => a !== "UNITED")
+                            : [...filters.airlines, "UNITED"],
+                        })
+                      }
+                      className="mr-2"
+                    />
+                    United
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={filters.airlines.includes("DELTA")}
+                      onChange={() =>
+                        updateFilters({
+                          airlines: filters.airlines.includes("DELTA")
+                            ? filters.airlines.filter((a) => a !== "DELTA")
+                            : [...filters.airlines, "DELTA"],
+                        })
+                      }
+                      className="mr-2"
+                    />
+                    Delta
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={filters.airlines.includes("AMERICAN")}
+                      onChange={() =>
+                        updateFilters({
+                          airlines: filters.airlines.includes("AMERICAN")
+                            ? filters.airlines.filter((a) => a !== "AMERICAN")
+                            : [...filters.airlines, "AMERICAN"],
+                        })
+                      }
+                      className="mr-2"
+                    />
+                    American
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={filters.airlines.includes("FRONTIER")}
+                      onChange={() =>
+                        updateFilters({
+                          airlines: filters.airlines.includes("FRONTIER")
+                            ? filters.airlines.filter((a) => a !== "FRONTIER")
+                            : [...filters.airlines, "FRONTIER"],
+                        })
+                      }
+                      className="mr-2"
+                    />
+                    Frontier
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium">Number of Stops</h3>
+                <select
+                  value={filters.stops}
+                  onChange={(e) =>
+                    updateFilters({ stops: parseInt(e.target.value) })
+                  }
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+                >
+                  <option value={0}>0 Stops</option>
+                  <option value={1}>1 Stop</option>
+                  <option value={2}>2 Stops</option>
+                </select>
+              </div>
             </div>
-
-            <div className="w-full">
-              <label htmlFor="arrivalDate" className="block text-lg mb-2 text-gray-700">Arrival Date</label>
-              <input
-                type="date"
-                id="arrivalDate"
-                value={arrivalDate}
-                onChange={(e) => setArrivalDate(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            <div className="flex justify-end mt-6 space-x-4">
+              <button
+                type="button"
+                onClick={closeFilterModal}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg transition duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  closeFilterModal();
+                  onSearch(
+                    selectedOriginAirport,
+                    selectedDestAirport,
+                    arrivalDate,
+                    filters
+                  );
+                }}
+                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+              >
+                Apply Filters
+              </button>
             </div>
           </div>
-
-          {error && <p className="text-red-500 text-center text-lg">{error}</p>}
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200"
-            disabled={!user.isLoggedIn}
-          >
-            Search
-          </button>
-        </form>
-
-        <p className="text-gray-500 text-center text-base mt-8">
-          Try searching for: <span className="font-semibold">LAX on 11/10/2024</span>
-        </p>
-      </div>
+        </div>
+      </Transition>
     </div>
   );
 };
