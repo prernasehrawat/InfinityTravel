@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import SearchForm, { Filters } from "./SearchForm";
 import SearchResults from "./SearchResults";
 import { useUser } from "./UserContext";
+import { FaStar } from "react-icons/fa";
+import axios from "axios";
 
 interface Flight {
   flight_id: number;
@@ -22,6 +24,21 @@ interface MainContentProps {
 function MainContent({ setIsLoggedIn }: MainContentProps) {
   const { user } = useUser();
   const [results, setResults] = useState<Flight[]>([]);
+  const [searchState, setSearchState] = useState<{
+    origin_airport: string;
+    arrival_airport: string;
+    arrival_date: string;
+    filters: Filters;
+  }>({
+    origin_airport: "",
+    arrival_airport: "",
+    arrival_date: "",
+    filters: {
+      priceRange: [0, 0],
+      airlines: [],
+      stops: 0,
+    },
+  });
 
   const handleSearch = async (
     origin_airport: string,
@@ -51,6 +68,12 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
 
       if (response.ok) {
         setResults(data);
+        setSearchState({
+          origin_airport,
+          arrival_airport,
+          arrival_date,
+          filters,
+        });
       } else {
         alert("No flights found or invalid input");
       }
@@ -60,12 +83,44 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
     }
   };
 
+  const handleFavouriteSearch = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8000/favourite-search",
+        { searchParams: searchState },
+        {
+          headers: {
+            "x-user-id": user.user_id,
+          },
+        }
+      );
+      alert("Search saved as a favourite!");
+    } catch (error) {
+      console.error("Error saving favourite search:", error);
+      alert("Failed to save search as a favourite.");
+    }
+  };
+
   return (
     <div className="main-content">
       <h1 className="text-4xl font-bold text-blue-600 mb-4">Infinity Travel</h1>
       <SearchForm onSearch={handleSearch} />
       {results.length > 0 ? (
-        <SearchResults results={results} />
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-4">
+            <p>
+              <strong>{results.length}</strong> flights found
+            </p>
+            <button
+              onClick={handleFavouriteSearch}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center space-x-2"
+            >
+              <FaStar className="text-yellow-500" />
+              <span>Favourite this search</span>
+            </button>
+          </div>
+          <SearchResults results={results} />
+        </div>
       ) : (
         <div className="space-y-4">
           <div className="p-4 border rounded-lg shadow-sm bg-white mt-5 text-lg">
