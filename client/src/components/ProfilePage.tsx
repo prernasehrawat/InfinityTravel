@@ -312,7 +312,30 @@ const ProfilePage: React.FC = () => {
     });
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
+  //   const newErrors: { [key: string]: string } = {};
+  //
+  //   if (!firstName.trim()) newErrors.firstName = "First name is required.";
+  //   if (!lastName.trim()) newErrors.lastName = "Last name is required.";
+  //   if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+  //     newErrors.email = "Valid email is required.";
+  //   }
+  //   if (!phoneNumber.trim()) newErrors.phoneNumber = "Phone number is required.";
+  //
+  //   setErrors(newErrors);
+  //
+  //   if (Object.keys(newErrors).length === 0) {
+  //     updateUser({
+  //       first_name: firstName,
+  //       last_name: lastName,
+  //       email: email,
+  //       phone_number: phoneNumber,
+  //       profileImage: profileImage || '', // Ensure profileImage is updated
+  //     });
+  //     setIsEditing(false);
+  //   }
+  // };
+  const handleSave = async () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!firstName.trim()) newErrors.firstName = "First name is required.";
@@ -325,16 +348,44 @@ const ProfilePage: React.FC = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      updateUser({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        phone_number: phoneNumber,
-        profileImage: profileImage || '', // Ensure profileImage is updated
-      });
-      setIsEditing(false);
+      try {
+        const response = await fetch("http://localhost:8000/user/update-user", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.user_id,
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            phone_number: phoneNumber,
+
+          }),
+        });
+
+        if (response.ok) {
+          const updatedUser = await response.json();
+          updateUser({
+            user_id: user.user_id,
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            phone_number: phoneNumber,
+
+          });
+          setIsEditing(false);
+          alert('Profile updated successfully');
+        } else {
+          alert('Failed to update profile');
+        }
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('An error occurred while updating the profile');
+      }
     }
   };
+
 
   const handleCancel = () => {
     // Reset to original values
@@ -349,19 +400,19 @@ const ProfilePage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
           <div className="mb-6 text-center">
-            <label htmlFor="imageUpload" className="cursor-pointer">
-              {profileImage ? (
-                  <img
-                      src={profileImage}
-                      alt="Profile"
-                      className="w-32 h-32 rounded-full mx-auto object-cover"
-                  />
-              ) : (
-                  <div className="w-32 h-32 rounded-full mx-auto bg-gray-300 flex items-center justify-center">
-                    <span className="text-gray-500">Upload Image</span>
-                  </div>
-              )}
-            </label>
+            {/*<label htmlFor="imageUpload" className="cursor-pointer">*/}
+            {/*  {profileImage ? (*/}
+            {/*      <img*/}
+            {/*          src={profileImage}*/}
+            {/*          alt="Profile"*/}
+            {/*          className="w-32 h-32 rounded-full mx-auto object-cover"*/}
+            {/*      />*/}
+            {/*  ) : (*/}
+            {/*      <div className="w-32 h-32 rounded-full mx-auto bg-gray-300 flex items-center justify-center">*/}
+            {/*        <span className="text-gray-500">Upload Image</span>*/}
+            {/*      </div>*/}
+            {/*  )}*/}
+            {/*</label>*/}
             <input
                 id="imageUpload"
                 type="file"

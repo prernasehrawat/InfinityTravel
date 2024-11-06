@@ -29,6 +29,8 @@ npm install --save-dev nodemon
 # Install packages
 npm install cors
 
+npm install uuid
+
 npm install jsonwebtoken
 
 echo "Setup complete. You can start the server by running:"
