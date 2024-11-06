@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "./UserContext";
 import { Transition } from "@headlessui/react";
 
@@ -9,6 +9,12 @@ interface SearchFormProps {
     arrival_date: string,
     filters: Filters
   ) => void;
+  initialSearchState: {
+    origin_airport: string;
+    arrival_airport: string;
+    arrival_date: string;
+    filters: Filters;
+  };
 }
 
 export interface Filters {
@@ -17,7 +23,10 @@ export interface Filters {
   stops: number;
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
+const SearchForm: React.FC<SearchFormProps> = ({
+  onSearch,
+  initialSearchState,
+}) => {
   const { user } = useUser();
   const [query, setQuery] = useState("");
   const [selectedOriginAirport, setSelectedOriginAirport] = useState("");
@@ -44,6 +53,22 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
     "SIN",
   ];
 
+  useEffect(() => {
+    // Set initial search state when component mounts
+    if (initialSearchState) {
+      setSelectedOriginAirport(initialSearchState.origin_airport || "");
+      setSelectedDestAirport(initialSearchState.arrival_airport || "");
+      setArrivalDate(initialSearchState.arrival_date || "");
+      setFilters(
+        initialSearchState.filters || {
+          priceRange: [100, 1000],
+          airlines: [],
+          stops: 0,
+        }
+      );
+    }
+  }, [initialSearchState]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user.isLoggedIn) {
@@ -59,23 +84,15 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
     onSearch(selectedOriginAirport, selectedDestAirport, arrivalDate, filters);
   };
 
-  const openFilterModal = () => {
-    setFilterModalOpen(true);
-  };
-
-  const closeFilterModal = () => {
-    setFilterModalOpen(false);
-  };
+  const openFilterModal = () => setFilterModalOpen(true);
+  const closeFilterModal = () => setFilterModalOpen(false);
 
   const updateFilters = (newFilters: Partial<Filters>) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      ...newFilters,
-    }));
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
   return (
-    <div className="bg-gray-100 py-6 px-6 rounded-xl">
+    <div className="bg-gray-100 pb-2 px-6 rounded-xl">
       <div className="flex items-center space-x-4 w-full py-6">
         <div className="w-full text-left">
           <label
@@ -159,6 +176,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
         </button>
       </div>
 
+      {/* Error and Filter Modal */}
       {error && (
         <p className="text-red-500 text-lg ml-4 mt-8 w-full">{error}</p>
       )}

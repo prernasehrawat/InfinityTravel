@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchForm, { Filters } from "./SearchForm";
 import SearchResults from "./SearchResults";
 import { useUser } from "./UserContext";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaBookmark } from "react-icons/fa";
 import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface Flight {
   flight_id: number;
@@ -23,6 +25,8 @@ interface MainContentProps {
 
 function MainContent({ setIsLoggedIn }: MainContentProps) {
   const { user } = useUser();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [results, setResults] = useState<Flight[]>([]);
   const [searchState, setSearchState] = useState<{
     origin_airport: string;
@@ -39,6 +43,39 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
       stops: 0,
     },
   });
+
+  useEffect(() => {
+    // Parse searchParams from the URL and update searchState
+    const params = new URLSearchParams(location.search);
+    const searchParams = params.get("searchParams");
+
+    if (searchParams) {
+      try {
+        const parsedParams = JSON.parse(decodeURIComponent(searchParams));
+        setSearchState({
+          origin_airport: parsedParams.origin_airport || "",
+          arrival_airport: parsedParams.arrival_airport || "",
+          arrival_date: parsedParams.arrival_date || "",
+          filters: {
+            priceRange: parsedParams.filters.priceRange || [0, 0],
+            airlines: parsedParams.filters.airlines || [],
+            stops: parsedParams.filters.stops || 0,
+          },
+        });
+
+        // Trigger the search with the parsed parameters
+        handleSearch(
+          parsedParams.origin_airport,
+          parsedParams.arrival_airport,
+          parsedParams.arrival_date,
+          parsedParams.filters
+        );
+      } catch (error) {
+        console.error("Error parsing search parameters:", error);
+        navigate("/"); // Redirect to a clean page if parsing fails
+      }
+    }
+  }, [location.search, navigate]);
 
   const handleSearch = async (
     origin_airport: string,
@@ -104,20 +141,32 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
   return (
     <div className="main-content">
       <h1 className="text-4xl font-bold text-blue-600 mb-4">Infinity Travel</h1>
-      <SearchForm onSearch={handleSearch} />
+      <SearchForm
+        onSearch={handleSearch}
+        initialSearchState={searchState} // Pass initial state to populate form inputs
+      />
       {results.length > 0 ? (
         <div className="mt-6">
           <div className="flex justify-between items-center mb-4">
             <p>
               <strong>{results.length}</strong> flights found
             </p>
-            <button
-              onClick={handleFavouriteSearch}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center space-x-2"
-            >
-              <FaStar className="text-yellow-500" />
-              <span>Favourite this search</span>
-            </button>
+            <div className="flex">
+              <button
+                onClick={handleFavouriteSearch}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center space-x-2"
+              >
+                <FaStar className="text-yellow-500" />
+                <span>Favourite this search</span>
+              </button>
+              <Link
+                to="/favourite-searches"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 flex items-center space-x-2 ml-2"
+              >
+                <FaBookmark className="text-emerald-400" />
+                <span>Go to favourites</span>
+              </Link>
+            </div>
           </div>
           <SearchResults results={results} />
         </div>
