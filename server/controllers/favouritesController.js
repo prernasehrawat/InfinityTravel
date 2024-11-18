@@ -7,7 +7,6 @@ const getFavourites = (req, res) => {
     const userId = headers["x-user-id"];
 
     if (!userId) {
-        // Stop further code execution after sending the response
         return res.status(401).json({ message: "Invalid parameters" });
     }
 
