@@ -22,6 +22,7 @@ const handleLogin = (req, res) => {
                 role: user.role,
                 phone_number: user.phone_number,
                 coupon_code: user.coupon_code,
+                rewards_points: user.rewards_points,
                 created_at: user.created_at
             });
         } else {
