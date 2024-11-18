@@ -13,7 +13,8 @@ import ProfilePage from "./components/ProfilePage";
 import Favourites from "./components/Favourites";
 import CheckoutPage from "./components/CheckoutPage";
 import { useUser } from "./components/UserContext";
-import NavBar from "./components/NavBar"; // Import the NavBar component
+import NavBar from "./components/NavBar"; 
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const { user, login } = useUser();
@@ -97,6 +98,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/favourite-searches" element={<Favourites />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
 
         {/* Global Footer - Hidden on the support and profile page */}
