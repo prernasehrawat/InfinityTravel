@@ -9,6 +9,7 @@ interface User {
   last_name: string;
   phone_number: string;
   couponCode: string;
+  rewards_points?: number;
   profileImage?: string;
 }
 
@@ -39,12 +40,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           last_name: "",
           phone_number: "",
           couponCode: "",
+          rewards_points: 0,
           profileImage: "", // Set default empty profile image
         };
   });
 
   const login = (userData: Omit<User, "isLoggedIn">) => {
-    const updatedUser = { ...userData, isLoggedIn: true };
+    const updatedUser = { ...userData, isLoggedIn: true, rewards_points: userData.rewards_points || 0  };
     localStorage.setItem("user", JSON.stringify(updatedUser));
     setUser(updatedUser);
   };
@@ -58,6 +60,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       last_name: "",
       phone_number: "",
       couponCode: "",
+      rewards_points: 0,
       profileImage: "", // Reset profile image on logout
     });
     localStorage.removeItem("user");
@@ -68,6 +71,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser)); // Save to localStorage
   };
+
+
 
   return (
     <UserContext.Provider value={{ user, login, logout, updateUser }}>

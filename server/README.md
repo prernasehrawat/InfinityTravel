@@ -33,6 +33,7 @@ ii) UPDATE flights SET stops = 0;
 
 iii) ALTER TABLE flights ADD COLUMN airline TEXT;
 iv) UPDATE flights SET airline = 'Unknown';
+v) ALTER TABLE users ADD COLUMN rewards_points INTEGER DEFAULT 0;
 
 
 2) Now run following commands to search flights using three different parameters

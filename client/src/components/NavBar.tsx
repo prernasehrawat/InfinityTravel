@@ -41,7 +41,8 @@ const NavBar: React.FC<NavBarProps> = ({ setIsLoggedIn }) => {
                     {showDropdown && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
                             <div className="py-2 px-4 text-gray-700">
-                                <strong>Coupon Code:</strong> {user.couponCode}
+                                <strong>Coupon Code:</strong> {user.couponCode} <br />
+                                <strong>Rewards Points:</strong> {user.rewards_points} {/* Display rewards points */}
                             </div>
                         </div>
                     )}
