@@ -13,6 +13,8 @@ const favouriteSearchRoute = require("./routes/favouriteSearch"); // Import the 
 const shareRoutes = require("./routes/share"); // Import the share routes
 const updateUserRoute = require("./routes/updateUser");
 const flightReservationsRoute = require("./routes/flightReservations");
+const notificationRoute = require("./routes/notification"); // Import the notification route
+
 // Define a simple route
 app.get("/update-user", (req, res) => {
   res.send("Hello, Express!");
@@ -30,6 +32,7 @@ app.use("/favourite-search", favouriteSearchRoute); // Use the search route
 app.use("/share", shareRoutes);
 app.use("/user", updateUserRoute);
 app.use("/flight-reservations", flightReservationsRoute);
+app.use("/notification", notificationRoute);
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
