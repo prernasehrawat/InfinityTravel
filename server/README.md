@@ -29,26 +29,26 @@ curl "http://localhost:8000/notification?name=John&cost=500&source=NYC&destinati
 
 1) For SEA-IAD route:
 
-## Hourly data
+### Hourly data
 curl "http://localhost:8000/metric?timeFrame=hourly&source=SEA&destination=IAD&date=2024-01-15"
 
-## Monthly data
+### Monthly data
 curl "http://localhost:8000/metric?timeFrame=monthly&source=SEA&destination=IAD&startDate=2024-01&endDate=2024-03"
 
 2)For LAX-JFK route:
 
-## Hourly data
+### Hourly data
 curl "http://localhost:8000/metric?timeFrame=hourly&source=LAX&destination=JFK&date=2024-01-15"
 
-## Monthly data
+### Monthly data
 curl "http://localhost:8000/metric?timeFrame=monthly&source=LAX&destination=JFK&startDate=2024-01&endDate=2024-03"
 
 2)For SFO-BOS route::
 
-## Hourly data
+### Hourly data
 curl "http://localhost:8000/metric?timeFrame=hourly&source=SFO&destination=BOS&date=2024-01-15"
 
-## Monthly data
+### Monthly data
 curl "http://localhost:8000/metric?timeFrame=monthly&source=SFO&destination=BOS&startDate=2024-01&endDate=2024-03"
 
 # Testing for sorting logic
