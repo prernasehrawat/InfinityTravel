@@ -12,6 +12,15 @@
 - run your server with npm start. This will create the tables and add initial data to it, as long as the db is empty.
 - Run select \* from users; in the sqlite cli. If you see 3 users, everything went well. You can exit the cli with .exit.
 
+#Testing for Notiifcation logic
+
+- Login to google account where we will receive notifications: username:infinitytravel46@gmail.com password: infinitytravel46infinitytravel46
+- Run "bash setup.sh" to install necessary libraries and packages
+- Run "node server.js" to start the server
+- Run following curl command from another server
+curl "http://localhost:8000/notification?name=John&cost=500&source=NYC&destination=LAX"
+- After running curl command, we can see notification email in inbox
+
 #Testing for sorting logic
 
 - Run `sqlite3 infinity-travel.db` in the console and then run following commands in sqlite cli to add flights with different cost to same destination and same date
