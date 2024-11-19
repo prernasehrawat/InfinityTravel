@@ -3,5 +3,5 @@
 node_modules/
 
 server/infinity-travel.db
-
+infinity-travel.db
 .vscode/
