@@ -139,11 +139,12 @@ const seedUsers = () => {
     if (row?.count === 0) {
       db.run(
         `
-        INSERT INTO users (first_name, last_name, hashed_password, email, phone_number, coupon_code)
+        INSERT INTO users (first_name, last_name, hashed_password, role, email, phone_number, coupon_code)
         VALUES 
-          ('John', 'Doe', 'hashedpassword1', 'john.doe@example.com', '555-1234', '${generateCouponCode()}'),
-          ('Jane', 'Smith', 'hashedpassword2', 'jane.smith@example.com', '555-5678', '${generateCouponCode()}'),
-          ('Mike', 'Johnson', 'hashedpassword3', 'mike.johnson@example.com', '555-9101', '${generateCouponCode()}');
+          ('John', 'Doe', 'hashedpassword1', 'user', 'john.doe@example.com', '555-1234', '${generateCouponCode()}'),
+          ('Jane', 'Smith', 'hashedpassword2', 'user', 'jane.smith@example.com', '555-5678', '${generateCouponCode()}'),
+          ('Mike', 'Johnson', 'hashedpassword3', 'user', 'mike.johnson@example.com', '555-9101', '${generateCouponCode()}'),
+          ('IT', 'Admin', 'adminpassword', 'admin', 'admin@infinity-travel.com', '555-5531', '${generateCouponCode()}');
       `,
         (err) => {
           if (!err) {

@@ -140,60 +140,57 @@ function MainContent({ setIsLoggedIn }: MainContentProps) {
 
   return (
     <div className="main-content">
-  <h1 className="text-4xl font-bold text-blue-600 mb-4">Infinity Travel</h1>
-  <SearchForm
-    onSearch={handleSearch}
-    initialSearchState={searchState}
-  />
-  {results.length > 0 ? (
-    <div className="mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <p>
-          <strong>{results.length}</strong> flights found
-        </p>
-        <div className="flex">
-          <button
-            onClick={handleFavouriteSearch}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center space-x-2"
-          >
-            <FaStar className="text-yellow-500" />
-            <span>Favourite this search</span>
-          </button>
-          <Link
-            to="/favourite-searches"
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 flex items-center space-x-2 ml-2"
-          >
-            <FaBookmark className="text-emerald-400" />
-            <span>Go to favourites</span>
-          </Link>
-          <Link
-            to="/dashboard"
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center space-x-2 ml-2"
-          >
-            <span>Go to Dashboard</span>
-          </Link>
+      <h1 className="text-4xl font-bold text-blue-600 mb-4">Infinity Travel</h1>
+      <SearchForm onSearch={handleSearch} initialSearchState={searchState} />
+      {results.length > 0 ? (
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-4">
+            <p>
+              <strong>{results.length}</strong> flights found
+            </p>
+            <div className="flex">
+              <button
+                onClick={handleFavouriteSearch}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center space-x-2"
+              >
+                <FaStar className="text-yellow-500" />
+                <span>Favourite this search</span>
+              </button>
+              <Link
+                to="/favourite-searches"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 flex items-center space-x-2 ml-2"
+              >
+                <FaBookmark className="text-emerald-400" />
+                <span>Go to favourites</span>
+              </Link>
+              {user.role === "admin" && (
+                <Link
+                  to="/dashboard"
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center space-x-2 ml-2"
+                >
+                  <span>Go to Dashboard</span>
+                </Link>
+              )}
+            </div>
+          </div>
+          <SearchResults results={results} />
         </div>
-      </div>
-      <SearchResults results={results} />
+      ) : (
+        <div className="space-y-4">
+          <div className="p-4 border rounded-lg shadow-sm bg-white mt-5 text-lg">
+            <p>
+              Use the above search and filter parameters to find your next
+              flight! 🛫
+            </p>
+            <p className="text-gray-500 text-center text-base mt-4">
+              Try searching for:{" "}
+              <span className="font-bold">JFK, LAX on 10/11/2024</span> or just{" "}
+              <span className="font-bold">HND to SFO</span>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
-  ) : (
-    <div className="space-y-4">
-      <div className="p-4 border rounded-lg shadow-sm bg-white mt-5 text-lg">
-        <p>
-          Use the above search and filter parameters to find your next
-          flight! 🛫
-        </p>
-        <p className="text-gray-500 text-center text-base mt-4">
-          Try searching for:{" "}
-          <span className="font-bold">JFK, LAX on 10/11/2024</span> or just{" "}
-          <span className="font-bold">HND to SFO</span>
-        </p>
-      </div>
-    </div>
-  )}
-</div>
-
-
   );
 }
 

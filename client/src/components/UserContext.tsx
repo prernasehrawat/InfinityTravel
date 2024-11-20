@@ -5,6 +5,7 @@ interface User {
   isLoggedIn: boolean;
   user_id: string;
   email: string;
+  role: string;
   first_name: string;
   last_name: string;
   phone_number: string;
@@ -46,7 +47,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   });
 
   const login = (userData: Omit<User, "isLoggedIn">) => {
-    const updatedUser = { ...userData, isLoggedIn: true, rewards_points: userData.rewards_points || 0  };
+    const updatedUser = {
+      ...userData,
+      isLoggedIn: true,
+      rewards_points: userData.rewards_points || 0,
+    };
     localStorage.setItem("user", JSON.stringify(updatedUser));
     setUser(updatedUser);
   };
@@ -56,6 +61,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       isLoggedIn: false,
       user_id: "",
       email: "",
+      role: "user",
       first_name: "",
       last_name: "",
       phone_number: "",
@@ -71,8 +77,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser)); // Save to localStorage
   };
-
-
 
   return (
     <UserContext.Provider value={{ user, login, logout, updateUser }}>

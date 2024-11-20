@@ -22,7 +22,8 @@ const Dashboard = () => {
   // Fetch metrics data
   const fetchMetrics = async () => {
     try {
-      const { timeFrame, source, destination, date, startDate, endDate } = filters;
+      const { timeFrame, source, destination, date, startDate, endDate } =
+        filters;
 
       let url = `http://localhost:8000/metric?timeFrame=${timeFrame}&source=${source}&destination=${destination}`;
       if (timeFrame === "hourly" && date) {
@@ -56,7 +57,9 @@ const Dashboard = () => {
         <select
           className="border px-4 py-2 mr-2"
           value={filters.timeFrame}
-          onChange={(e) => setFilters({ ...filters, timeFrame: e.target.value })}
+          onChange={(e) =>
+            setFilters({ ...filters, timeFrame: e.target.value })
+          }
         >
           <option value="hourly">Hourly</option>
           <option value="monthly">Monthly</option>
@@ -73,7 +76,9 @@ const Dashboard = () => {
           placeholder="Destination"
           className="border px-4 py-2 mr-2"
           value={filters.destination}
-          onChange={(e) => setFilters({ ...filters, destination: e.target.value })}
+          onChange={(e) =>
+            setFilters({ ...filters, destination: e.target.value })
+          }
         />
         {filters.timeFrame === "hourly" && (
           <input
@@ -89,13 +94,17 @@ const Dashboard = () => {
               type="month"
               className="border px-4 py-2 mr-2"
               value={filters.startDate}
-              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, startDate: e.target.value })
+              }
             />
             <input
               type="month"
               className="border px-4 py-2"
               value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, endDate: e.target.value })
+              }
             />
           </>
         )}
@@ -119,14 +128,23 @@ const Dashboard = () => {
                 <td className="border border-gray-300 px-4 py-2">
                   {filters.timeFrame === "hourly" ? metric.hour : metric.month}
                 </td>
-                <td className="border border-gray-300 px-4 py-2">{metric.source}</td>
-                <td className="border border-gray-300 px-4 py-2">{metric.destination}</td>
-                <td className="border border-gray-300 px-4 py-2">{metric.search_count}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {metric.source}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {metric.destination}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {metric.search_count}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={4} className="border border-gray-300 px-4 py-2 text-center">
+              <td
+                colSpan={4}
+                className="border border-gray-300 px-4 py-2 text-center"
+              >
                 No data available
               </td>
             </tr>

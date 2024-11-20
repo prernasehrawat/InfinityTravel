@@ -14,7 +14,7 @@ import Favourites from "./components/Favourites";
 import CheckoutPage from "./components/CheckoutPage";
 import { useUser } from "./components/UserContext";
 import NavBar from "./components/NavBar";
-import ThankYouPage from "./components/ThankYouPage"; 
+import ThankYouPage from "./components/ThankYouPage";
 import Dashboard from "./components/Dashboard";
 
 function App() {
@@ -60,6 +60,7 @@ function App() {
         login({
           user_id: data.user_id,
           email: data.email,
+          role: data.role,
           phone_number: data.phone_number,
           first_name: data.first_name,
           last_name: data.last_name,
@@ -99,10 +100,33 @@ function App() {
           <Route path="/support" element={<SupportPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/favourite-searches" element={<Favourites />} />
-          <Route path="/checkout" element={<CheckoutPage />}
-          />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              user.role === "admin" ? (
+                <Dashboard />
+              ) : (
+                <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
+                  <div className="text-center">
+                    <h1 className="text-4xl font-bold text-red-600 mb-4">
+                      Access Denied
+                    </h1>
+                    <p className="text-lg text-gray-600 mb-6">
+                      You do not have permission to access this page.
+                    </p>
+                    <button
+                      onClick={() => (window.location.href = "/")}
+                      className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      Go to Homepage
+                    </button>
+                  </div>
+                </div>
+              )
+            }
+          />
         </Routes>
 
         {/* Global Footer - Hidden on the support and profile page */}
