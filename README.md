@@ -23,19 +23,14 @@ Infinity Travel is a feature-rich web application designed to redefine the trave
    - Apply promotional codes during checkout.  
    - Receive immediate feedback on discount success or failure.  
 
-5. **User Reviews**:  
-   - Leave reviews and ratings for past bookings.  
-   - Read feedback from other travelers to make informed decisions.  
-
-6. **Agile Development Focus**:  
+5. **Agile Development Focus**:  
    - Developed using Scrum methodologies, ensuring continuous feedback and incremental improvements.  
    - Regular sprints for refining user stories and delivering prioritized features.  
 
 **Technology Stack:**  
 - **Frontend:** ReactJS with Material UI for a responsive and user-friendly interface.  
 - **Backend:** NodeJS with ExpressJS for scalable and efficient server-side logic.  
-- **Database:** MySQL with Sequelize ORM for secure and reliable data storage.  
-- **Deployment:** Hosted on AWS with CI/CD pipelines for streamlined updates.  
+- **Database:** MySQL for reliable data storage.   
 
 **Motivation:**  
 Infinity Travel was conceptualized to address the growing need for a user-centric travel management platform. By focusing on intuitive features like personalized searches, dynamic filtering, and a robust review system, the platform aims to simplify travel planning for users worldwide.
